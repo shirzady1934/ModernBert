@@ -3,15 +3,18 @@
 
 # Follow the instructions in the README to set up ./my-copy-c4
 # Or point data paths to your remote C4 dataset
-data_local: ./my-copy-c4
-data_remote: # If blank, files must be present in data_local
+#data_local: /home/kicker_angel/modernbert/llm-foundry/scripts/data_prep/new_divan
+data_local: /home/kicker_angel/modernbert/examples/examples/benchmarks/bert/src/total_divan_mds
+#data_local: /home/kicker_angel/modernbert/examples/examples/benchmarks/bert/src/my-fineweb
+data_remote:  # If blank, files must be present in data_local
 
-max_seq_len: 512
-tokenizer_name: bert-base-uncased # switch to bert tokenizer until we add [MASK] token to the llama tokenizer meta-llama/Llama-2-7b-hf
+max_seq_len: 1024
+#tokenizer_name: bert-base-uncased # switch to bert tokenizer until we add [MASK] token to the llama tokenizer meta-llama/Llama-2-7b-hf
+tokenizer_name: HooshvareLab/bert-fa-base-uncased # switch to bert tokenizer until we add [MASK] token to the llama tokenizer meta-llama/Llama-2-7b-hf
 mlm_probability: 0.3 # FlexBERT should use 30% masking for optimal performance
 
 # Run Name
-run_name: flex-bert-rope-base
+run_name: flex-bert-rope-base-hooshvare-total_divan
 
 # Model
 model:
@@ -86,7 +89,7 @@ eval_loader:
   dataset:
     local: ${data_local}
     remote: ${data_remote}
-    split: val
+    split: test
     tokenizer_name: ${tokenizer_name}
     max_seq_len: ${max_seq_len}
     shuffle: false
@@ -118,7 +121,7 @@ global_train_batch_size: 4096
 
 # System
 seed: 17
-device_train_microbatch_size: 128
+device_train_microbatch_size: 64
 # device_train_microbatch_size: auto
 precision: amp_bf16
 
@@ -126,7 +129,8 @@ global_eval_batch_size: 256
 device_eval_microbatch_size: 64
 
 # Logging
-progress_bar: false
+#progress_bar: false
+progress_bar: true
 log_to_console: true
 console_log_interval: 1ba
 
@@ -140,16 +144,27 @@ callbacks:
     window_size: 10
   lr_monitor: {}
 
+#loggers:
+#  tensorboard:
+#    log_dir: /home/kicker_angel/run_logs/
+#    flush_secs: 10              # How often to flush the logs to disk
+#    name: flex-bert-rope-base   # Optional name for the logging run
+
 # (Optional) W&B logging
-# loggers:
-#   wandb:
-#     project:      # Fill this in
-#     entity:       # Fill this in
+loggers:
+  wandb:
+    project: modernbert      # Fill this in
+    entity: sutkaggles # Fill this in
 
 # (Optional) Checkpoint to local filesystem or remote object store
 # save_interval: 3500ba
 # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
 # save_folder:      # e.g. './{run_name}/ckpt' (local) or 's3://mybucket/mydir/{run_name}/ckpt' (remote)
+
+# (Optional) Checkpoint to local filesystem or remote object store
+save_interval: 3500ba
+save_num_checkpoints_to_keep: 10  # Important, this cleans up checkpoints saved to DISK
+save_folder: ./run3/ckpt     # e.g. './{run_name}/ckpt' (local) or 's3://mybucket/mydir/{run_name}/ckpt' (remote)
 
 # (Optional) Load from local filesystem or remote object store to
 # start from an existing model checkpoint;
