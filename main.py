@@ -4,6 +4,7 @@
 # Copyright 2022 MosaicML Examples authors
 # SPDX-License-Identifier: Apache-2.0
 
+#import tensorboard
 import os
 import sys
 import warnings
@@ -383,6 +384,7 @@ def main(cfg: DictConfig, return_trainer: bool = False, do_train: bool = True) -
 
     # Dataloaders
     print("Building train loader...")
+    model.tokenizer._pad_token=0
     train_loader = build_dataloader(
         cfg=cfg.train_loader,
         tokenizer=model.tokenizer,
@@ -462,7 +464,7 @@ def main(cfg: DictConfig, return_trainer: bool = False, do_train: bool = True) -
         load_weights_only=cfg.get("load_weights_only", False),
         python_log_level=cfg.get("python_log_level", None),
         autoresume=cfg.get("autoresume", None),
-        fsdp_config=cfg.get("fsdp_config", None),
+        #fsdp_config=cfg.get("fsdp_config", None),
         compile_config=cfg.get("compile_config", None),
     )
 
